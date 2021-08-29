@@ -1,0 +1,41 @@
+.console {
+    margin-top: 2.5rem;
+    border-top: 1px solid #444;
+    .background {
+        object-fit: fill;
+        background-color: black;
+        margin: 10px;
+        padding: 10px;
+    }
+    
+    .console-inner{
+        overflow-y: auto;
+        margin: 0px;
+        padding: 0px;
+    }
+    
+    .console-text {
+        color: rgb(255, 255, 255);
+        font-family: Monospace;
+        margin: 10px 0px 0px 10px;
+        .console-line {
+            display: block;
+        }
+        span {
+            &.time {
+                color: #ffc107;
+            }
+            &.server-message {
+                color: #0d6efd;
+            }
+            &.client-message {
+                color: #198754;
+            }
+            &.error {
+                color: #dc3545;
+            }
+        }
+    }
+
+
+}

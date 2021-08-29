@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "npx jest --passWithNoTests",
+    "start": "npm run build && npm test && node dist/index.js"
+  },
+  "author": "Nova Walseth",
+  "license": "MIT",
+  "dependencies": {
+    "@awkewainze/checkverify": "^1.0.2",
+    "@awkewainze/simpletimer": "^1.0.0",
+    "debug": "^4.3.2",
+    "http-graceful-shutdown": "^3.1.3",
+    "koa": "^2.13.1",
+    "portfinder": "^1.0.28",
+    "shared": "file:../shared",
+    "socket.io": "^4.1.3"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/jest": "^27.0.1",
+    "@types/koa": "^2.13.4",
+    "@types/node": "^16.6.1",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.3.5"
+  }
+}
