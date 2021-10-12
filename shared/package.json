@@ -5,9 +5,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "watch": "tsc -w",
     "build": "tsc",
     "test": "npx jest"
   },
   "author": "Nova Walseth",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  }
 }

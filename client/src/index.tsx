@@ -7,6 +7,4 @@ import { render } from "react-dom";
 import { Main } from "./components";
 import "./styles.scss";
 
-document.addEventListener("DOMContentLoaded", () => {
-    render(<Main />, document.body)
-});
+render(<Main />, document.getElementById("main"));

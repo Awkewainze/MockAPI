@@ -1,6 +1,7 @@
 import { Duration } from "@awkewainze/simpleduration";
 import { Timer } from "@awkewainze/simpletimer";
 import { DateTime } from "luxon";
+import { Observable, Subject } from "rxjs";
 
 export interface LogEvent {
     from: "Server" | "Client";
@@ -17,26 +18,21 @@ export class LogStreamService {
         if (!this.instance) {
             this.instance = new this();
         }
-        this.instance.generateMockStreamData();
+        // this.instance.generateMockStreamData();
         return this.instance;
     }
 
-    private listeners: Array<(event: LogEvent) => void> = [];
     sendEvent(event: Omit<LogEvent, "dateTime">) {
         const eventWithCurrentTime = {
             ...event,
             dateTime: DateTime.now()
         };
-        this.listeners.forEach(listener => listener(eventWithCurrentTime));
+        this.logSubject.next(eventWithCurrentTime);
     }
 
-    listen(listener: (event: LogEvent) => void): (event: LogEvent) => void {
-        this.listeners.push(listener);
-        return listener;
-    }
-
-    removerListener(listener: (event: LogEvent) => void) {
-        this.listeners = this.listeners.filter(x => x !== listener);
+    private readonly logSubject: Subject<Readonly<LogEvent>> = new Subject();
+    get LogObservable(): Observable<Readonly<LogEvent>> {
+        return this.logSubject.asObservable();
     }
 
     private randomSentence(): string {

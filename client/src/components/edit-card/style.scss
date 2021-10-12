@@ -1,0 +1,13 @@
+.edit-card {
+    margin: 1rem;
+    height: 100%;
+    .form-select {
+        color: var(--bs-gray-500);
+    }
+    .form-control {
+        &:read-only {
+            background-color: var(--bs-gray-700);
+        }
+        color: var(--bs-gray-500);
+    }
+}

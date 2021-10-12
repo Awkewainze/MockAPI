@@ -18,7 +18,9 @@ export enum RouteType {
     Proxy = "Proxy",
     FileUpload = "FileUpload",
     FileDownload = "FileDownload",
-    CodeExecution = "CodeExecution"
+    CodeExecution = "CodeExecution",
+    UrlTransform = "UrlTransform",
+    HeaderTransform = "HeaderTransform"
 }
 
 export enum StatusCode {
@@ -47,15 +49,27 @@ export enum StatusCode {
 }
 
 export interface RouteRequestRequirements {
+    /**
+     * String containing Regex to match.
+     * i.e. `https://example.com/.*`
+     */ 
     route: string;
-    method?: HTTPMethod;
+    /**
+     * Which HTTP methods to match on
+     * GET, POST, DELETE, empty array or `undefined` will match all
+     */
+    method: Array<HTTPMethod>;
+    // TODO: USE
     headers?: Record<string, string>;
+    // TODO: USE
     body?: string;
 }
 
 export interface Route {
+    id: string,
     type: RouteType;
     requestRequirements: RouteRequestRequirements;
+    name?: string;
     skip?: number;
     take?: number;
 }
@@ -84,6 +98,23 @@ export interface ProxyRoute extends Route {
 
 export interface FileUploadRoute extends Route {
     type: RouteType.FileUpload;
+}
+
+export interface UrlTransform extends Route {
+    type: RouteType.UrlTransform
+    /** Regex string to match in the url. */
+    from: string;
+    /** Regex string to replace with. */
+    // TODO Support `$1` replace
+    to: string
+}
+
+export interface HeaderTransform extends Route {
+    type: RouteType.HeaderTransform;
+    /** Adds headers to matching request, replacing existing ones. */
+    add: Record<string, string>;
+    /** Removes headers with matching key from request, does not replace ones added in same transform. */
+    remove: Array<string>;
 }
 
 export enum FileDownloadGeneratorType {
