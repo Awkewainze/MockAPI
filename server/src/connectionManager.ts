@@ -5,11 +5,11 @@ import koa, { Context } from "koa";
 import { getPortPromise } from "portfinder";
 import { ClientToServerEvents, ConnectionEventsMap, Route, ServerToClientEvents } from "shared";
 import { Socket } from "socket.io";
-import { RouteManager } from "./routeManager";
+import { Router } from "./router";
 
 export class ConnectionManager {
     private assignedPort: Nullable<number> = null;
-    private routeManager: Nullable<RouteManager> = null;
+    private routeManager: Nullable<Router> = null;
     private app: koa;
     private shutdown: () => Promise<void> = async () => {};
 
@@ -30,6 +30,12 @@ export class ConnectionManager {
         log("Done");
     }
 
+    public async destroy(): Promise<void> {
+        this.emitServerShuttingDown();
+        this.socket.disconnect(true);
+        await this.shutdown();
+    }
+
     private emitServerReady() {
         this.socket.emit(ServerToClientEvents.ServerReady);
     }
@@ -38,8 +44,8 @@ export class ConnectionManager {
         this.socket.emit(ServerToClientEvents.ProvidedPort, port);
     }
 
-    public destroy() {
-        this.socket.disconnect(true);
+    private emitServerShuttingDown() {
+        this.socket.emit(ServerToClientEvents.ServerShuttingDown);
     }
 
     private async onPreferredPorts(ports: number[]) {
@@ -68,7 +74,7 @@ export class ConnectionManager {
     }
 
     private onClientData(routes: Route[]) {
-        this.routeManager = new RouteManager(routes);
+        this.routeManager = new Router(routes);
         this.emitServerReady();
     }
 

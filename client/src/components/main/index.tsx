@@ -1,8 +1,8 @@
 import { faCloudUploadAlt, faFolderOpen, faPlusCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
-import { Button, ButtonGroup, Col, Container, Row, Spinner } from "react-bootstrap";
-import { Route, RouteType } from "shared";
+import { Button, ButtonGroup, Col, Container, OverlayTrigger, Row, Spinner, Tooltip } from "react-bootstrap";
+import { HTTPMethod, Route, RouteType } from "shared";
 import { LogStreamService } from "../../services";
 import { Chain } from "../chain";
 import { ConsoleComponent } from "../console";
@@ -25,8 +25,8 @@ export class Main extends React.PureComponent<IProps, IState> {
         this.state = {
             isSaving: false,
             routes: [
-                { id: "a", type: RouteType.Static, requestRequirements: { route: "/test1" } },
-                { id: "b", type: RouteType.Static, requestRequirements: { route: "/test2" } },
+                { id: "a", type: RouteType.Static, requestRequirements: { route: "/test1", methods: [HTTPMethod.GET, HTTPMethod.POST] } },
+                { id: "b", type: RouteType.Static, requestRequirements: { route: "/test2", methods: [HTTPMethod.POST] } },
                 { id: "c", type: RouteType.Static, requestRequirements: { route: "/test3" } },
                 { id: "d", type: RouteType.Static, requestRequirements: { route: "/test4" } },
                 { id: "e", type: RouteType.Static, requestRequirements: { route: "/test5" } },
@@ -36,11 +36,11 @@ export class Main extends React.PureComponent<IProps, IState> {
                 { id: "i", type: RouteType.Static, requestRequirements: { route: "/test9" } }
             ]
         };
-        this.save = this.save.bind(this);
+        this.uploadConfiguration = this.uploadConfiguration.bind(this);
         this.routeOrderUpdated = this.routeOrderUpdated.bind(this);
     }
 
-    private save() {
+    private uploadConfiguration() {
         this.setState({isSaving: true});
         this.logger.sendEvent({from: "Client", text: "Uploading configuration to server..."});
         setTimeout(() => {
@@ -58,24 +58,34 @@ export class Main extends React.PureComponent<IProps, IState> {
             <Container fluid className="main h-100 mh-100">
                 <Row className="main-row mh-75 h-75">
                     <Col md="9" className="mh-100 h-100">
-                        <EditCard selectedCard={this.state.routes[0]}></EditCard>
+                        <EditCard selectedRoute={this.state.routes[0]} onSave={route => {}}></EditCard>
                     </Col>
                     <Col md="3" className="chain-and-controls">
                         <ButtonGroup className="chain-controls w-100">
-                            <Button variant="outline-primary"><FontAwesomeIcon icon={faPlusCircle} aria-label="Save"/></Button>
-                            <Button variant="outline-primary" disabled={this.state.isSaving} onClick={this.save}>
-                                {this.state.isSaving ?
-                                    <Spinner
-                                        as="span"
-                                        animation="border"
-                                        size="sm"
-                                        role="status"
-                                        aria-hidden="true"/>
-                                    : <FontAwesomeIcon icon={faCloudUploadAlt} aria-label="Upload configuration" />}
-                            </Button>
-                            <Button variant="outline-info"><FontAwesomeIcon icon={faSave} aria-label="Save"/></Button>
-                            <Button variant="outline-info"><FontAwesomeIcon icon={faFolderOpen} aria-label="Load"/></Button>
-                            <Button variant="outline-danger"><FontAwesomeIcon icon={faTrash} aria-label="Clear"/></Button>
+                            <OverlayTrigger placement="left" overlay={<Tooltip id="nickname-tooltip">Add card</Tooltip>}>
+                                <Button variant="outline-primary"><FontAwesomeIcon icon={faPlusCircle} aria-label="Add card"/></Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger placement="left" overlay={<Tooltip id="nickname-tooltip">Upload configuration to server</Tooltip>}>
+                                <Button variant="outline-primary" disabled={this.state.isSaving} onClick={this.uploadConfiguration}>
+                                    {this.state.isSaving ?
+                                        <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"/>
+                                        : <FontAwesomeIcon icon={faCloudUploadAlt} aria-label="Upload configuration to server" />}
+                                </Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger placement="left" overlay={<Tooltip id="nickname-tooltip">Save configuration locally</Tooltip>}>
+                                <Button variant="outline-info"><FontAwesomeIcon icon={faSave} aria-label="Save locally"/></Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger placement="left" overlay={<Tooltip id="nickname-tooltip">Load local configuration</Tooltip>}>
+                                <Button variant="outline-info"><FontAwesomeIcon icon={faFolderOpen} aria-label="Load locally"/></Button>
+                            </OverlayTrigger>
+                            <OverlayTrigger placement="left" overlay={<Tooltip id="nickname-tooltip">Clear configuration</Tooltip>}>
+                                <Button variant="outline-danger"><FontAwesomeIcon icon={faTrash} aria-label="Clear"/></Button>
+                            </OverlayTrigger>
                         </ButtonGroup>
                         <Chain routes={this.state.routes} routeOrderUpdated={this.routeOrderUpdated} routeSelected={() => {}} routeDeleted={() => {}} />
                     </Col>

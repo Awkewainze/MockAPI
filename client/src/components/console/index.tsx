@@ -21,7 +21,7 @@ interface IState {
 
 type PersistentState = Partial<Omit<IState, "events">>;
 export class ConsoleComponent extends React.PureComponent<IProps, IState> {
-    private static readonly PersistentStateKey = "ConsolePreferences"; 
+    private static readonly PersistentStateKey = "ConsolePreferences";
     constructor(props: IProps) {
         super(props);
         this.handleNavSelect = this.handleNavSelect.bind(this);
@@ -135,9 +135,9 @@ export class ConsoleComponent extends React.PureComponent<IProps, IState> {
                 </Nav>
                 <div className="background h-100 mh-100">
                     <div className={"console-inner h-100 mh-100 " + (this.state.logNotification ? "notify" : "")}>
-                        <p className="console-text">
+                        <span className="console-text">
                             {this.state.events.filter(this.logFilter).map(this.eventToLine)}
-                        </p>
+                        </span>
                     </div>
                 </div>
             </div>

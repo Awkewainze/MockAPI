@@ -33,7 +33,7 @@ export class PreviewCard extends React.PureComponent<IProps, IState> {
         return (
         <Card>
             <Card.Body>
-                <Card.Title>Static - {this.props.route.requestRequirements.method ?? ""} {this.props.route.requestRequirements.route}</Card.Title>
+                <Card.Title>Static - {this.props.route.requestRequirements.methods?.join(", ")} {this.props.route.requestRequirements.route}</Card.Title>
                 <Card.Text>
                     {this.props.route.type}
                 </Card.Text>

@@ -21,5 +21,7 @@
 			"path": "documentation"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.formatOnSave": true
+	}
 }

@@ -17,6 +17,7 @@
     "debug": "^4.3.2",
     "http-graceful-shutdown": "^3.1.3",
     "koa": "^2.13.1",
+    "koa-proxy": "^1.0.0-alpha.3",
     "portfinder": "^1.0.28",
     "shared": "file:../shared",
     "socket.io": "^4.1.3"
@@ -25,6 +26,7 @@
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.0.1",
     "@types/koa": "^2.13.4",
+    "@types/koa-proxy": "^1.0.3",
     "@types/node": "^16.6.1",
     "jest": "^27.0.6",
     "ts-jest": "^27.0.5",

@@ -1,3 +1,5 @@
+import { Duration } from "@awkewainze/simpleduration";
+import { Timer } from "@awkewainze/simpletimer";
 import { Context } from "koa";
 import { DelayRoute } from "shared";
 import { BaseHandler } from "./base";
@@ -8,9 +10,8 @@ export class DelayHandler implements BaseHandler {
         this.config = config;
     }
 
-    handle(ctx: Context): Promise<boolean> {
-        return new Promise(resolve => setTimeout(() => {
-            resolve(false);
-        }, this.config.delayMs ?? 0));
+    async handle(ctx: Context): Promise<boolean> {
+        await Timer.immediateAwaitable(Duration.fromMilliseconds(this.config.delayMs) ?? 0);
+        return false;
     }
 }

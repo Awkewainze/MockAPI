@@ -1,10 +1,10 @@
 import http from "http";
 import gracefulShutdown from "http-graceful-shutdown";
 import koa from "koa";
+import { onShutdown } from "node-graceful-shutdown";
 import { ConnectionEventsMap } from "shared";
 import SocketIO from "socket.io";
 import { ConnectionManager } from "./connectionManager";
-
 
 export class Server {
     private static instance: Server;
@@ -33,9 +33,14 @@ export class Server {
             console.error("socket.io error: ", err);
         });
         this.shutdown = gracefulShutdown(this.server);
+        onShutdown(async () => {
+            await Promise.all(Array.from(this.connections).map(connection => connection.destroy()));
+            await this.shutdown();
+        });
     }
 
+    private readonly connections = new Set<ConnectionManager>();
     private onIOConnection(socket: SocketIO.Socket<ConnectionEventsMap>) {
-        new ConnectionManager(socket);
+        this.connections.add(new ConnectionManager(socket));
     }
 }

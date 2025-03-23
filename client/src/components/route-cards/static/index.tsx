@@ -25,7 +25,7 @@ export class StaticCard extends React.PureComponent<IProps, IState> {
         return (
         <Card>
             <Card.Body>
-                <Card.Title>Static - {this.props.routeInfo.requestRequirements.method ?? "ALL"} {this.props.routeInfo.requestRequirements.route}</Card.Title>
+                <Card.Title>Static - {this.props.routeInfo.requestRequirements.methods?.join(", ") ?? "ALL"} {this.props.routeInfo.requestRequirements.route}</Card.Title>
                 <Card.Text>
                     {this.props.routeInfo.statusCode} {StatusCode[this.props.routeInfo.statusCode ?? 200]}
                 </Card.Text>

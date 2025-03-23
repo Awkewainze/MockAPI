@@ -12,13 +12,13 @@ export interface LogEvent {
 
 export class LogStreamService {
     private static instance: LogStreamService;
-    private constructor(){
+    private constructor() {
     }
     static getInstance(): LogStreamService {
         if (!this.instance) {
             this.instance = new this();
         }
-        // this.instance.generateMockStreamData();
+        this.instance.generateMockStreamData();
         return this.instance;
     }
 

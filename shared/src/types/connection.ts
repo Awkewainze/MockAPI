@@ -8,7 +8,8 @@ export enum ClientToServerEvents {
 
 export enum ServerToClientEvents {
     ProvidedPort = "ProvidedPort",
-    ServerReady = "ServerReady"
+    ServerReady = "ServerReady",
+    ServerShuttingDown = "ServerShuttingDown"
 }
 
 export interface ConnectionEventsMap {
@@ -17,4 +18,5 @@ export interface ConnectionEventsMap {
     Reset: () => void;
     ProvidedPort: (port: number) => void;
     ServerReady: () => void;
-}
+    ServerShuttingDown: () => void;
+};

@@ -1,10 +1,12 @@
+import { Check } from "@awkewainze/checkverify";
 import * as React from "react";
 import { Button, Card, Col, Form, OverlayTrigger, Row, Tooltip } from "react-bootstrap";
-import { Route } from "shared";
+import { HTTPMethod, Route, RouteType } from "shared";
 import "./style.scss";
 
 interface IProps {
-    selectedCard: Readonly<Route>;
+    selectedRoute: Readonly<Route>;
+    onSave: (updatedCard: Route) => void;
 }
 
 interface IState {
@@ -15,19 +17,25 @@ export class EditCard extends React.PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            route: {...this.props.selectedCard}
+            route: {...this.props.selectedRoute}
         };
         this.getTitle = this.getTitle.bind(this);
         this.onSelectCardType = this.onSelectCardType.bind(this);
+        this.onSelectMethod = this.onSelectMethod.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
     }
 
     private getTitle(): string {
-        return this.state.route.name ?? `${this.state.route.type} - ${this.state.route.requestRequirements.method ?? "ALL"} ${this.state.route.requestRequirements.route}`;
+        return this.state.route.name ?? `${this.state.route.type} - ${this.state.route.requestRequirements.methods ?? []} ${this.state.route.requestRequirements.route}`;
     }
 
     private onSelectCardType(select: React.ChangeEvent<HTMLSelectElement>): void {
-        console.log(select.target.value);
+        this.setState({ route: { ...this.state.route, type: select.target.value as RouteType }});
+    }
+
+    private onSelectMethod(select: React.ChangeEvent<HTMLSelectElement>): void {
+        const newValue: Array<HTTPMethod> = select.target.value === "ALL" ? [] : [select.target.value as HTTPMethod];
+        this.setState({ route: { ...this.state.route, requestRequirements: { ...this.state.route.requestRequirements, methods: newValue } }});
     }
 
     private saveChanges(): void {
@@ -46,7 +54,7 @@ export class EditCard extends React.PureComponent<IProps, IState> {
                                     <OverlayTrigger placement="right" overlay={<Tooltip id="nickname-tooltip">Display name for card, does not modify functionality</Tooltip>}>
                                         <Form.Label>Nickname</Form.Label>
                                     </OverlayTrigger>
-                                    <Form.Control type="route-name" placeholder="Route name"></Form.Control>
+                                    <Form.Control value={this.state.route.name ?? ""} type="route-name" placeholder="Route name" onChange={event => this.setState({ route: { ...this.state.route, name: Check.isNullUndefinedOrWhitespace(event.target.value) ? undefined : event.target.value }})}></Form.Control>
                                 </Form.Group>
                                 <Form.Group as={Col} className="mb-3">
                                     <OverlayTrigger placement="right" overlay={<Tooltip id="route-type-tooltip">How this route will handle a request</Tooltip>}>
@@ -66,7 +74,7 @@ export class EditCard extends React.PureComponent<IProps, IState> {
                             </Row>
                             <Row>
                                 <Form.Group as={Col} className="mb-3">
-                                    <OverlayTrigger placement="right" overlay={<Tooltip id="route-path-tooltip">Route path handled by this link, Regex</Tooltip>}>
+                                    <OverlayTrigger placement="right" overlay={<Tooltip id="route-path-tooltip">Route path handled by this link, uses Regex</Tooltip>}>
                                         <Form.Label>Route path</Form.Label>
                                     </OverlayTrigger>
                                     <Form.Control type="route-path" placeholder="/example/.*"></Form.Control>
@@ -75,7 +83,7 @@ export class EditCard extends React.PureComponent<IProps, IState> {
                                     <OverlayTrigger placement="right" overlay={<Tooltip id="route-method-tooltip">Methods handled by this link</Tooltip>}>
                                         <Form.Label>Method</Form.Label>
                                     </OverlayTrigger>
-                                    <Form.Select aria-label="Select method" onChange={this.onSelectCardType}>
+                                    <Form.Select aria-label="Select method" onChange={this.onSelectMethod}>
                                         <option value="ALL">ALL</option>
                                         <option value="GET">GET</option>
                                         <option value="POST">POST</option>
@@ -84,13 +92,13 @@ export class EditCard extends React.PureComponent<IProps, IState> {
                                     </Form.Select>
                                 </Form.Group>
                                 <Form.Group as={Col} className="mb-3">
-                                    <OverlayTrigger placement="right" overlay={<Tooltip id="route-skip-tooltip">Skip this number of interactions with this route</Tooltip>}>
+                                    <OverlayTrigger placement="right" overlay={<Tooltip id="route-skip-tooltip">Skip this number of interactions with this route, defaults to 0</Tooltip>}>
                                         <Form.Label>Skip</Form.Label>
                                     </OverlayTrigger>
                                     <Form.Control type="route-skip" placeholder="0"></Form.Control>
                                 </Form.Group>
                                 <Form.Group as={Col} className="mb-3">
-                                    <OverlayTrigger placement="right" overlay={<Tooltip id="route-take-tooltip">Take this number of interactions with this route</Tooltip>}>
+                                    <OverlayTrigger placement="right" overlay={<Tooltip id="route-take-tooltip">Take this number of interactions with this route, defaults to infinite</Tooltip>}>
                                         <Form.Label>Take</Form.Label>
                                     </OverlayTrigger>
                                     <Form.Control type="route-take" placeholder="10"></Form.Control>
